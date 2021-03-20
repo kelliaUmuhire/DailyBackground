@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { ONE_DAY } = require('../utils/imports');
 
 let user_schema = new mongoose.Schema({
     sur_name: {
@@ -47,9 +48,7 @@ user_schema.methods.generateAuthToken = function () {
             gender: this.gender,
             email: this.email
         }
-        , process.env.KEY, {
-        expiresIn: ONE_DAY / 1000
-    })
+        , process.env.KEY)
 };
 
 // validate user
