@@ -1,6 +1,6 @@
 const { formatResult, validateObjectId, upload_single_image, hashPassword, ONE_DAY } = require("../../utils/imports");
 const { compare } = require('bcryptjs');
-const { UserModel, validateUser } = require("../../models/User.model");
+const { UserModel, validateUser, validateUserPasswordUpdate } = require("../../models/User.model");
 
 
 /**
@@ -160,6 +160,33 @@ exports.getUserById = async (req, res) => {
     }
 }
 
+/**
+ * Update User Passwords
+ * @param req
+ * @param res
+ */
+ exports.updateUserPassword = async (req, res) => {
+    try {
+
+        const { error } = validateUserPasswordUpdate(req.body);
+        if (error) return res.send(formatResult(400, error.details[0].message));
+
+        const user = await UserModel.findById(req.user._id);
+        if (!user) return res.send(formatResult(404, 'User not found'));
+
+        const validPassword = await compare(req.body.current_password, user.password);
+        if (!validPassword) return res.send(formatResult(400, 'Invalid password'));
+
+        const hashedPassword = await hashPassword(req.body.new_password);
+        user.password = hashedPassword
+        const updated = await user.save();
+
+        return res.send(formatResult(201, "UPDATED", updated));
+
+    } catch (err) {
+        return res.send(formatResult(500, err));
+    }
+};
 
 
 
