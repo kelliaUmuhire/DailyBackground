@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('joi')
 const { ONE_DAY } = require('../utils/imports');
+const jwt = require('jsonwebtoken')
 
 let user_schema = new mongoose.Schema({
     sur_name: {

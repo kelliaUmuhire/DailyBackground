@@ -16,7 +16,7 @@ const PictureController = {
     getImageByTag(req, res) {
         unsplash.search
             .getPhotos({
-                query: req.body.tag,
+                query: req.params.tag,
                 page: 1,
                 perPage: 10,
             })

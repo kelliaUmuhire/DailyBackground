@@ -1,12 +1,14 @@
 // import dependencies
 const { verify } = require('jsonwebtoken')
 const { UserModel } = require('../models/User.model')
+const { formatResult } = require('../utils/imports')
 
 async function auth(req, res, next) {
     const header = req.header('authorization')
     if (!header)
         return res.send(formatResult(401, 'No Token Found'))
     const token = header.split(' ')[1]
+    console.log(token)
     if (!token)
         return res.send(formatResult(401, 'No Token Found'))
     try {
