@@ -19,6 +19,22 @@ exports.checkEmailExistance = async (req, res) => {
 };
 
 
+/**
+ * Check Username Existence
+ * @param req
+ * @param res
+ */
+exports.checkUsernameExistence = async (req, res) => {
+    try {
+        const user = await UserModel.findOne({ user_name: req.params.user_name, status: 'ACTIVE' });
+        if (user) return res.send(formatResult(200, 'Username Already Taken', { exists: true }));
+        return res.send(formatResult(200, 'Username Available', { exists: false }));
+    } catch (err) {
+        return res.send(formatResult(500, err));
+    }
+};
+
+
 
 
 
