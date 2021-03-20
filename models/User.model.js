@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Joi = require('joi')
 const { ONE_DAY } = require('../utils/imports');
 
 let user_schema = new mongoose.Schema({
@@ -70,6 +71,15 @@ exports.validateUser = (user, action = 'create') => {
     })
     return schema.validate(user)
 }
+
+exports.validateUserLogin = (data) => {
+    const schema = Joi.object({
+        email_user_name: Joi.string().min(5).required(),
+        password: Joi.string().required(),
+    })
+    return schema.validate(data)
+}
+
 
 exports.validateUserPasswordUpdate = (data) => {
     const schema = Joi.object({

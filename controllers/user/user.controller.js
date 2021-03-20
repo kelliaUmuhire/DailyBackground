@@ -1,6 +1,6 @@
 const { formatResult, validateObjectId, upload_single_image, hashPassword, ONE_DAY } = require("../../utils/imports");
 const { compare } = require('bcryptjs');
-const { UserModel, validateUser, validateUserPasswordUpdate } = require("../../models/User.model");
+const { UserModel, validateUser, validateUserPasswordUpdate, validateUserLogin } = require("../../models/User.model");
 
 
 /**
@@ -83,7 +83,7 @@ exports.createUser = async (req, res) => {
 
         req.body.password = await hashPassword(req.body.password);
 
-        const newUser = new User(req.body);
+        const newUser = new UserModel(req.body);
 
         const result = await newUser.save();
 
@@ -106,9 +106,9 @@ exports.userLogin = async (req, res) => {
 
         const user = await UserModel.findOne({
             $or: [{
-                email: req.body.email_user_name_or_phone
+                email: req.body.email_user_name
             }, {
-                user_name: req.body.email_user_name_or_phone
+                user_name: req.body.email_user_name
             }]
         });
         if (!user) return res.send(formatResult(404, 'Invalid credentials'));
