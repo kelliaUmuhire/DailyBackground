@@ -38,6 +38,20 @@ let user_schema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+user_schema.methods.generateAuthToken = function () {
+    return jwt.sign(
+        {
+            user_name: this.user_name,
+            sur_name: this.sur_name,
+            other_names: this.other_names,
+            gender: this.gender,
+            email: this.email
+        }
+        , process.env.KEY, {
+        expiresIn: ONE_DAY / 1000
+    })
+};
+
 // validate user
 exports.validateUser = (user, action = 'create') => {
     const schema = action === 'create' ? Joi.object({

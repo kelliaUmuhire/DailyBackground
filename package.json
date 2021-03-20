@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/kelliaUmuhire/DailyBackground#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
-    "mongoose": "^5.12.1"
+    "joi": "^17.4.0",
+    "mongoose": "^5.12.1",
+    "unsplash-js": "^7.0.8"
   }
 }
