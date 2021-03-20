@@ -31,3 +31,8 @@ exports.formatResult = (status = 200, message = 'OK', data) => {
  */
  exports.validateObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
+ /**
+  * One Day in Milliseconds
+  * @type {number}
+  */
+  exports.ONE_DAY = 1 * 24 * 60 * 60 * 1000;
