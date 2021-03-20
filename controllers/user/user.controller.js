@@ -196,7 +196,7 @@ exports.updateUserPassword = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
 
-        const result = await UserModel.findOneAdDelete({ _id: req.user._id });
+        const result = await UserModel.findOneAndDelete({ _id: req.user._id });
         if (!result)
             return res.send(formatResult(404, 'User not found'));
 

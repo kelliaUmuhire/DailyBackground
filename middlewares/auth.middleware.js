@@ -8,7 +8,7 @@ async function auth(req, res, next) {
     if (!header)
         return res.send(formatResult(401, 'No Token Found'))
     const token = header.split(' ')[1]
-    console.log(token)
+
     if (!token)
         return res.send(formatResult(401, 'No Token Found'))
     try {

@@ -30,3 +30,16 @@ const PictureController = {
 }
 
 module.exports = PictureController
+
+/**
+ * 
+ * doc
+ * {
+ *      user_id
+ *      last_pics:[
+ *          { pic_url * 5, date  } 
+ *          // size ni 7
+ *      ]
+ * }
+ * 
+ */
