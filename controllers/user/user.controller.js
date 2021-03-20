@@ -1,6 +1,6 @@
 const { formatResult, validateObjectId, upload_single_image, hashPassword, ONE_DAY } = require("../../utils/imports");
 const { compare } = require('bcryptjs');
-const { UserModel } = require("../../models/User.model");
+const { UserModel, validateUser } = require("../../models/User.model");
 
 
 /**
@@ -55,6 +55,46 @@ exports.getUserById = async (req, res) => {
         return res.send(formatResult(500, e))
     }
 }
+
+/***
+ *  Create's a new user
+ * @param req
+ * @param res
+ */
+ exports.createUser = async (req, res) => {
+    try {
+        const { error } = validateUser(req.body);
+        if (error) return res.send(formatResult(400, error.details[0].message));
+
+        let { email, user_name } = req.body
+
+        let user = await UserModel.findOne({
+            $or: [{
+                email: email ? email : ''
+            }, {
+                user_name: user_name ? user_name : ''
+            }],
+        })
+
+        if (user) {
+            const emailFound = email == user.email
+            return res.send(formatResult(400, `User with same ${emailFound ? 'email ' : 'user_name'} arleady exist`))
+        }
+
+        req.body.password = await hashPassword(req.body.password);
+
+        const newUser = new User(req.body);
+
+        const result = await newUser.save();
+
+        return res.send(formatResult(201, 'CREATED', result));
+    } catch
+    (e) {
+        return res.send(formatResult(500, e))
+    }
+}
+
+
 
 
 
