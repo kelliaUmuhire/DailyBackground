@@ -48,7 +48,7 @@ user_schema.methods.generateAuthToken = function () {
             gender: this.gender,
             email: this.email
         }
-        , process.env.KEY)
+        , process.env.JWT_SECRET)
 };
 
 // validate user
