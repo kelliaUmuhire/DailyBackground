@@ -61,7 +61,7 @@ exports.getUserById = async (req, res) => {
  * @param req
  * @param res
  */
- exports.createUser = async (req, res) => {
+exports.createUser = async (req, res) => {
     try {
         const { error } = validateUser(req.body);
         if (error) return res.send(formatResult(400, error.details[0].message));
@@ -99,7 +99,7 @@ exports.getUserById = async (req, res) => {
  * @param req
  * @param res
  */
- exports.userLogin = async (req, res) => {
+exports.userLogin = async (req, res) => {
     try {
         const { error } = validateUserLogin(req.body);
         if (error) return res.status(400).send(error.details[0].message);
@@ -127,7 +127,7 @@ exports.getUserById = async (req, res) => {
  * @param req
  * @param res
  */
- exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res) => {
     try {
 
         const { error } = validateUser(req.body, 'update');
@@ -165,7 +165,7 @@ exports.getUserById = async (req, res) => {
  * @param req
  * @param res
  */
- exports.updateUserPassword = async (req, res) => {
+exports.updateUserPassword = async (req, res) => {
     try {
 
         const { error } = validateUserPasswordUpdate(req.body);
@@ -193,7 +193,7 @@ exports.getUserById = async (req, res) => {
  * @param req
  * @param res
  */
- exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res) => {
     try {
 
         const result = await UserModel.findOneAdDelete({ _id: req.user._id });
