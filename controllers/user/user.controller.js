@@ -35,6 +35,27 @@ exports.checkUsernameExistence = async (req, res) => {
 };
 
 
+/***
+ *  Get user by id
+ * @param req
+ * @param res
+ */
+exports.getUserById = async (req, res) => {
+    try {
+        if (!validateObjectId(req.params.id))
+            return res.send(formatResult(400, 'Invalid id'))
+
+        const user = await UserModel.findById(req.params.id);
+        if (!user)
+            return res.send(formatResult(404, 'User not found'));
+
+        return res.send(formatResult(200, undefined, user));
+
+    } catch (e) {
+        return res.send(formatResult(500, e))
+    }
+}
+
 
 
 
