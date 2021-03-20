@@ -94,6 +94,34 @@ exports.getUserById = async (req, res) => {
     }
 }
 
+/**
+ * Login User
+ * @param req
+ * @param res
+ */
+ exports.userLogin = async (req, res) => {
+    try {
+        const { error } = validateUserLogin(req.body);
+        if (error) return res.status(400).send(error.details[0].message);
+
+        const user = await UserModel.findOne({
+            $or: [{
+                email: req.body.email_user_name_or_phone
+            }, {
+                user_name: req.body.email_user_name_or_phone
+            }]
+        });
+        if (!user) return res.send(formatResult(404, 'Invalid credentials'));
+
+        const validPassword = await compare(req.body.password, user.password);
+        if (!validPassword) return res.send(formatResult(404, 'Invalid credentials'));
+        return res.status(200).send(formatResult(200, 'OK', await user.generateAuthToken()));
+
+    } catch (e) {
+        return res.send(formatResult(500, e))
+    }
+}
+
 
 
 
