@@ -1,7 +1,17 @@
 import { createApi } from 'unsplash-js';
 
-const serverApi = createApi({
-    accessKey: process.env.ACCESS_KEY,
-    //...other fetch options
-  });
+const unsplash = new createApi({
+    accessKey: process.env.,
+});
 
+const PictureController = {
+    getRandomPicture(req,res){
+    unsplash.photos
+    .getRandom({})
+    .then((data) => {
+    console.log(data);
+    })
+    .catch((err) => console.log(err));
+    }
+
+}
