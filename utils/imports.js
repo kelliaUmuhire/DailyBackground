@@ -25,3 +25,9 @@ exports.formatResult = (status = 200, message = 'OK', data) => {
     }
 }
 
+/***
+ * @param id
+ * @returns {*}
+ */
+ exports.validateObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
