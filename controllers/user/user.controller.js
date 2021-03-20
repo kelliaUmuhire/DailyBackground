@@ -122,7 +122,43 @@ exports.getUserById = async (req, res) => {
     }
 }
 
+/***
+ *  updates's a new user
+ * @param req
+ * @param res
+ */
+ exports.updateUser = async (req, res) => {
+    try {
 
+        const { error } = validateUser(req.body, 'update');
+        if (error) return res.send(formatResult(400, error.details[0].message));
+
+        let { email, national_id, phone, category, user_name } = req.body
+
+        let dupplicate_user = await UserModel.findOne({
+            _id: {
+                $ne: req.user._id
+            },
+            $or: [{
+                email: email
+            }, {
+                user_name: user_name
+            }],
+        })
+
+        if (dupplicate_user) {
+            const emailFound = email == user.email
+            return res.send(formatResult(400, `User with same ${emailFound ? 'email ' : 'user_name'} arleady exist`))
+        }
+
+        const result = await UserModel.findOneAndUpdate({ _id: req.user._id }, req.body, { new: true });
+
+        return res.send(formatResult(200, 'UPDATED', result));
+    } catch
+    (e) {
+        return res.send(formatResult(500, e))
+    }
+}
 
 
 
