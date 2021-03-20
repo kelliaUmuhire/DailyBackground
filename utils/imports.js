@@ -11,3 +11,17 @@ exports.hashPassword = async (password) => {
     return hashed;
 }
 
+/***
+ * @param status
+ * @param message
+ * @param data
+ * @returns {{data: *, message: string, status: number}}
+ */
+exports.formatResult = (status = 200, message = 'OK', data) => {
+    return {
+        status: status,
+        message: message.toString().split('\"').join(''),
+        data: data
+    }
+}
+
