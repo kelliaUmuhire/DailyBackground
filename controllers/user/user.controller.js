@@ -188,6 +188,24 @@ exports.getUserById = async (req, res) => {
     }
 };
 
+/***
+ *  updates's a new user
+ * @param req
+ * @param res
+ */
+ exports.deleteUser = async (req, res) => {
+    try {
+
+        const result = await UserModel.findOneAdDelete({ _id: req.user._id });
+        if (!result)
+            return res.send(formatResult(404, 'User not found'));
+
+        return res.send(formatResult(200, 'DELETED'));
+    } catch
+    (e) {
+        return res.send(formatResult(500, e))
+    }
+}
 
 
 
