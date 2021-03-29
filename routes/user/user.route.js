@@ -11,7 +11,7 @@ router.route('/')
     .delete([auth, deleteUser])
 
 router.route('/load_new_image')
-    .get([auth, PictureController.getRandomPicture])
+    .get([auth, LoadNewImage])
 
 router.route('/:id')
     .get(getUserById)
