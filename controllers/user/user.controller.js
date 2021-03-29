@@ -11,10 +11,10 @@ const { UserModel, validateUser, validateUserPasswordUpdate, validateUserLogin }
 exports.checkEmailExistance = async (req, res) => {
     try {
         const user = await UserModel.findOne({ email: req.params.email, status: 'ACTIVE' });
-        if (user) return res.send(formatResult(200, 'Email Already Taken', { exists: true }));
-        return res.send(formatResult(200, 'Email Available', { exists: false }));
+        if (user) return res.send(formatResult({ status: 200, message: 'Email Already Taken', data: { exists: true } }));
+        return res.send(formatResult({ status: 200, message: 'Email Available', data: { exists: false } }));
     } catch (err) {
-        return res.send(formatResult(500, err));
+        return res.send(formatResult({ status: 500, message: err }));
     }
 };
 
@@ -27,10 +27,10 @@ exports.checkEmailExistance = async (req, res) => {
 exports.checkUsernameExistence = async (req, res) => {
     try {
         const user = await UserModel.findOne({ user_name: req.params.user_name, status: 'ACTIVE' });
-        if (user) return res.send(formatResult(200, 'Username Already Taken', { exists: true }));
-        return res.send(formatResult(200, 'Username Available', { exists: false }));
+        if (user) return res.send(formatResult({ status: 200, message: 'Username Already Taken', data: { exists: true } }));
+        return res.send(formatResult({ status: 200, message: 'Username Available', data: { exists: false } }));
     } catch (err) {
-        return res.send(formatResult(500, err));
+        return res.send(formatResult({ status: 500, message: err }));
     }
 };
 
@@ -43,16 +43,16 @@ exports.checkUsernameExistence = async (req, res) => {
 exports.getUserById = async (req, res) => {
     try {
         if (!validateObjectId(req.params.id))
-            return res.send(formatResult(400, 'Invalid id'))
+            return res.send(formatResult({ status: 400, message: 'Invalid id' }))
 
         const user = await UserModel.findById(req.params.id);
         if (!user)
-            return res.send(formatResult(404, 'User not found'));
+            return res.send(formatResult({ status: 404, message: 'User not found' }));
 
-        return res.send(formatResult(200, undefined, user));
+        return res.send(formatResult({ status: 200, data: user }));
 
     } catch (e) {
-        return res.send(formatResult(500, e))
+        return res.send(formatResult({ status: 500, message: e }))
     }
 }
 
@@ -64,7 +64,7 @@ exports.getUserById = async (req, res) => {
 exports.createUser = async (req, res) => {
     try {
         const { error } = validateUser(req.body);
-        if (error) return res.send(formatResult(400, error.details[0].message));
+        if (error) return res.send(formatResult({ status: 400, message: error.details[0].message }));
 
         let { email, user_name } = req.body
 
@@ -78,7 +78,7 @@ exports.createUser = async (req, res) => {
 
         if (user) {
             const emailFound = email == user.email
-            return res.send(formatResult(400, `User with same ${emailFound ? 'email ' : 'user_name'} arleady exist`))
+            return res.send(formatResult({ status: 400, message: `User with same ${emailFound ? 'email ' : 'user_name'} arleady exist`)))
         }
 
         req.body.password = await hashPassword(req.body.password);
@@ -87,10 +87,10 @@ exports.createUser = async (req, res) => {
 
         const result = await newUser.save();
 
-        return res.send(formatResult(201, 'CREATED', result));
+        return res.send(formatResult({ status: 201, message: 'CREATED', data: result }));
     } catch
     (e) {
-        return res.send(formatResult(500, e))
+        return res.send(formatResult({ status: 500, message: e }))
     }
 }
 
@@ -102,7 +102,7 @@ exports.createUser = async (req, res) => {
 exports.userLogin = async (req, res) => {
     try {
         const { error } = validateUserLogin(req.body);
-        if (error) return res.status(400).send(error.details[0].message);
+        if (error) return res.send(formatResult({ status: 400, message: error.details[0].message }));
 
         const user = await UserModel.findOne({
             $or: [{
@@ -111,14 +111,14 @@ exports.userLogin = async (req, res) => {
                 user_name: req.body.email_user_name
             }]
         });
-        if (!user) return res.send(formatResult(404, 'Invalid credentials'));
+        if (!user) return res.send(formatResult({ status: 404, message: 'Invalid credentials' }));
 
         const validPassword = await compare(req.body.password, user.password);
-        if (!validPassword) return res.send(formatResult(404, 'Invalid credentials'));
-        return res.status(200).send(formatResult(200, 'OK', await user.generateAuthToken()));
+        if (!validPassword) return res.send(formatResult({ status: 404, message: 'Invalid credentials' }));
+        return res.status(200).send(formatResult({ status: 200, message: 'OK', data: await user.generateAuthToken() }));
 
     } catch (e) {
-        return res.send(formatResult(500, e))
+        return res.send(formatResult({ status: 500, message: e }))
     }
 }
 
@@ -131,7 +131,7 @@ exports.updateUser = async (req, res) => {
     try {
 
         const { error } = validateUser(req.body, 'update');
-        if (error) return res.send(formatResult(400, error.details[0].message));
+        if (error) return res.send(formatResult({ status: 400, message: error.details[0].message }));
 
         let { email, national_id, phone, category, user_name } = req.body
 
@@ -148,15 +148,15 @@ exports.updateUser = async (req, res) => {
 
         if (dupplicate_user) {
             const emailFound = email == user.email
-            return res.send(formatResult(400, `User with same ${emailFound ? 'email ' : 'user_name'} arleady exist`))
+            return res.send(formatResult({ status: 400, message: `User with same ${emailFound ? 'email ' : 'user_name'} arleady exist` }))
         }
 
         const result = await UserModel.findOneAndUpdate({ _id: req.user._id }, req.body, { new: true });
 
-        return res.send(formatResult(200, 'UPDATED', result));
+        return res.send(formatResult({ status: 200, message: 'UPDATED', data: result }));
     } catch
     (e) {
-        return res.send(formatResult(500, e))
+        return res.send(formatResult({ status: 500, message: e }))
     }
 }
 
@@ -169,22 +169,22 @@ exports.updateUserPassword = async (req, res) => {
     try {
 
         const { error } = validateUserPasswordUpdate(req.body);
-        if (error) return res.send(formatResult(400, error.details[0].message));
+        if (error) return res.send(formatResult({ status: 400, message: error.details[0].message }));
 
         const user = await UserModel.findById(req.user._id);
-        if (!user) return res.send(formatResult(404, 'User not found'));
+        if (!user) return res.send(formatResult({ status: 404, message: 'User not found' }));
 
         const validPassword = await compare(req.body.current_password, user.password);
-        if (!validPassword) return res.send(formatResult(400, 'Invalid password'));
+        if (!validPassword) return res.send(formatResult({ status: 400, message: 'Invalid password' }));
 
         const hashedPassword = await hashPassword(req.body.new_password);
         user.password = hashedPassword
         const updated = await user.save();
 
-        return res.send(formatResult(201, "UPDATED", updated));
+        return res.send(formatResult({ status: 201, message: "UPDATED", data: updated }));
 
     } catch (err) {
-        return res.send(formatResult(500, err));
+        return res.send(formatResult({ status: 500, message: err }));
     }
 };
 
@@ -198,12 +198,12 @@ exports.deleteUser = async (req, res) => {
 
         const result = await UserModel.findOneAndDelete({ _id: req.user._id });
         if (!result)
-            return res.send(formatResult(404, 'User not found'));
+            return res.send(formatResult({ status: 404, message: 'User not found' }));
 
-        return res.send(formatResult(200, 'DELETED'));
+        return res.send(formatResult({ status: 200, message: 'DELETED' }));
     } catch
     (e) {
-        return res.send(formatResult(500, e))
+        return res.send(formatResult({ status: 500, message: e }))
     }
 }
 

@@ -1,7 +1,10 @@
-import { createApi } from 'unsplash-js';
+const { createApi } = require('unsplash-js');
 
 const unsplash = new createApi({
     accessKey: process.env.ACCESS_KEY,
+    headers: {
+        Authorization: `Client-ID ${process.env.ACCESS_KEY}`
+    }
 });
 
 const PictureController = {
@@ -9,6 +12,7 @@ const PictureController = {
         unsplash.photos
             .getRandom({})
             .then((data) => {
+                console.log(data);
                 res.status(200).send({ urls: data.response.urls })
             })
             .catch((err) => console.log(err));
@@ -32,14 +36,14 @@ const PictureController = {
 module.exports = PictureController
 
 /**
- * 
+ *
  * doc
  * {
  *      user_id
  *      last_pics:[
- *          { pic_url * 5, date  } 
+ *          { pic_url * 5, date  }
  *          // size ni 7
  *      ]
  * }
- * 
+ *
  */

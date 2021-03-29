@@ -18,6 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api/users", UserRoutes);
+
+app.use("/api/pics",require("./routes/picture.route"))
 app.get("/", (req, res) => {
     res.send("Welcome");
 });

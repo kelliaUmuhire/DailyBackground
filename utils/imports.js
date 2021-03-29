@@ -11,13 +11,15 @@ exports.hashPassword = async (password) => {
     return hashed;
 }
 
+exports.PasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
+
 /***
  * @param status
  * @param message
  * @param data
  * @returns {{data: *, message: string, status: number}}
  */
-exports.formatResult = (status = 200, message = 'OK', data) => {
+exports.formatResult = ({status = 200, message = 'OK', data}) => {
     return {
         status: status,
         message: message.toString().split('\"').join(''),
@@ -26,6 +28,7 @@ exports.formatResult = (status = 200, message = 'OK', data) => {
 }
 
 /***
+ * Validate objectId
  * @param id
  * @returns {*}
  */

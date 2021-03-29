@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const PictureController = require("../controllers/PictureContoller")
+const PictureController = require("../controllers/picture.contoller")
 
 //get random picture
 router.get("/",PictureController.getRandomPicture);

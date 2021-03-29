@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi')
-const { ONE_DAY } = require('../utils/imports');
+const { ONE_DAY, PasswordRegex } = require('../utils/imports');
 const jwt = require('jsonwebtoken')
 
 let user_schema = new mongoose.Schema({
@@ -59,7 +59,7 @@ exports.validateUser = (user, action = 'create') => {
         sur_name: Joi.string().min(3).required(),
         other_names: Joi.string().min(3).required(),
         user_name: Joi.string().min(5).max(50),
-        password: Joi.string().min(8).required(),
+        password: Joi.string().regex(PasswordRegex).required(),
         email: Joi.string().email().required(),
         gender: Joi.string().min(4).max(6).valid('male', 'female').required()
     }) : Joi.object({
@@ -84,8 +84,8 @@ exports.validateUserLogin = (data) => {
 
 exports.validateUserPasswordUpdate = (data) => {
     const schema = Joi.object({
-        current_password: Joi.string().min(8).required(),
-        new_password: Joi.string().min(8).required(),
+        current_password: Joi.string().regex(PasswordRegex).required(),
+        new_password: Joi.string().regex(PasswordRegex).required(),
     })
     return schema.validate(data)
 }
