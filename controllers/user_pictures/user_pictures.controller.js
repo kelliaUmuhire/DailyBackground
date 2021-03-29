@@ -19,7 +19,7 @@ exports.getUserLatestImage = async (req, res) => {
         let user_pic = await UserPicture.findOne({ user: req.user._id });
         res.status(200).send({ user_pic: user_pic });
     } catch (err) {
-        return res.send(formatResult(500, err));
+        return res.send(formatResult({ status: 500, message: err }));
     }
 };
 
@@ -29,6 +29,7 @@ exports.getUserLatestImage = async (req, res) => {
  * @param res
  */
 exports.LoadNewImage = async function (req, res) {
+    console.log("there");
     try {
         const { data } = await unsplash.photos.getRandom({});
         let user_pic = await UserPicture.findOne({ user: req.user._id });
@@ -58,8 +59,9 @@ exports.LoadNewImage = async function (req, res) {
             }
         }
         await user_pic.save();
-        res.status(200).send({ urls: user_pic });
+        console.log("object");
+        res.status(200).send(formatResult({ status: 200, data: user_pic }));
     } catch (err) {
-        return res.send(formatResult(500, err));
+        return res.send(formatResult({ status: 500, message: err }));
     }
 };
