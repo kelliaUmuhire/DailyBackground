@@ -16,12 +16,8 @@ const unsplash = new createApi({
  */
 exports.getUserLatestImage = async (req, res) => {
   try {
-    unsplash.photos
-      .getRandom({})
-      .then((data) => {
-        res.status(200).send({ urls: data.response.urls });
-      })
-      .catch((err) => console.log(err));
+    let user_pic = await UserPicture.findOne({ user: req.user._id });
+    res.status(200).send({ user_pic: user_pic });
   } catch (err) {
     return res.send(formatResult(500, err));
   }
