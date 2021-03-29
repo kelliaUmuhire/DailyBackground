@@ -29,16 +29,15 @@ exports.getUserLatestImage = async (req, res) => {
  * @param res
  */
 exports.LoadNewImage = async function (req, res) {
-    console.log("there");
     try {
-        const { data } = await unsplash.photos.getRandom({});
+        const data = await unsplash.photos.getRandom({});
         let user_pic = await UserPicture.findOne({ user: req.user._id });
-        const today = new Date().toISOString().split("T")[0];
+        let today = new Date().toISOString();
         const new_pic = {
             date: today,
-            regular: data.urls.regular,
-            small: data.urls.small,
-            thumb: data.urls.thumb,
+            regular: data.response.urls.regular,
+            small: data.response.urls.small,
+            thumb: data.response.urls.thumb,
         };
 
         if (!user_pic) {
@@ -47,7 +46,7 @@ exports.LoadNewImage = async function (req, res) {
                 last_pics: [new_pic],
             });
         } else {
-            const isThisDayFound = user_pic.last_pics.filter((e) => e.data == today);
+            const isThisDayFound = user_pic.last_pics.filter((e) => new Date(e.date).toISOString().split("T")[0] == today.split("T")[0]);
             if (!isThisDayFound.length) {
                 if (user_pic.last_pics.length == 7)
                     user_pic.last_pics.shift();
@@ -59,7 +58,6 @@ exports.LoadNewImage = async function (req, res) {
             }
         }
         await user_pic.save();
-        console.log("object");
         res.status(200).send(formatResult({ status: 200, data: user_pic }));
     } catch (err) {
         return res.send(formatResult({ status: 500, message: err }));

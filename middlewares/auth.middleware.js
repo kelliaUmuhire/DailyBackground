@@ -3,8 +3,7 @@ const { verify } = require('jsonwebtoken')
 const { UserModel } = require('../models/User.model')
 const { formatResult } = require('../utils/imports')
 
-async function auth(req, res, next) {
-    console.log("here");
+async function auth(req, res, next) {   
     const header = req.header('authorization')
     if (!header)
         return res.send(formatResult({ status: 401, message: 'No Token Found' }))
